@@ -11,12 +11,16 @@ import logger from 'morgan';
 import { join } from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import {
+    DB_URI,
+    NODE_ENV,
+} from './constants/env.mjs';
 
 const app = express();
 const __dirname =
     import.meta.dirname || dirname(fileURLToPath(import.meta.url));
 // Define the database URL to connect to.
-const mongoDb = process.env.MONGO_DB;
+const mongoDb = DB_URI;
 // Wait for database to connect, logging an error if there is a problem
 const main = async () => await mongoose.connect(mongoDb);
 
@@ -46,7 +50,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, _) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
-    res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
+    res.locals.error = NODE_ENV === 'development' ? err : {};
 
     // render the error page
     res.status(err.status || 500);

@@ -1,10 +1,10 @@
-import 'dotenv/config';
 import http from 'http';
 import path from 'path';
 import debugFunc from 'debug';
 import app from '../app.mjs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { PORT } from '../constants/env.mjs';
 
 const __dirname =
     import.meta.dirname || dirname(fileURLToPath(import.meta.url));
@@ -14,7 +14,7 @@ const debug = debugFunc(`${root}:server`);
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(PORT || '3000');
 app.set('port', port);
 
 /**

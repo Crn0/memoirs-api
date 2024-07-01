@@ -17,10 +17,6 @@ const postSchema = new Schema({
         type: Types.ObjectId,
         ref: 'Tag',
     }],
-    comments: [{
-        type: Types.ObjectId,
-        ref: 'Comment',
-    }],
 },
 { timestamps: true }
 );

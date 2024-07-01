@@ -7,6 +7,11 @@ const commentSchema = new Schema({
     body: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     likes: { type: Number, default: 0 },
+    post: {
+        type: Types.ObjectId,
+        ref: 'Post',
+        required: true,
+    },
     replies: [
         {
             type: Types.ObjectId,

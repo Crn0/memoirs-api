@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/bin/www.mjs",
     "dev": "nodemon ./src/bin/www.mjs",
-    "server": "DEBUG=<directory_name>:* npm run dev",
+    "server": "DEBUG=memoirs:* npm run dev",
     "format": "prettier --write \"**/*.{js,mjs}\""
   },
   "keywords": [],

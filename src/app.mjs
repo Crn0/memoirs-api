@@ -15,6 +15,7 @@ import {
     DB_URI,
     NODE_ENV,
 } from './constants/env.mjs';
+import * as Routes from './routes/indexRoute.mjs';
 
 const app = express();
 const __dirname =
@@ -38,8 +39,9 @@ app.use(compression()); // Compress all routes
 app.use(express.static(join(__dirname, '..', 'public')));
 
 // ROUTES
-
-
+app.use('/users', Routes.UserRoute);
+app.use('/posts', Routes.PostRoute);
+app.use('/posts', Routes.CommentRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -17,6 +17,7 @@ const postSchema = new Schema({
         type: Types.ObjectId,
         ref: 'Tag',
     }],
+    isDeleted: { type: Boolean, required: true, default: false }
 },
 { timestamps: true }
 );

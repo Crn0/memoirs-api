@@ -6,8 +6,8 @@ const route = Router();
 route.get('/', UserController.GET.users);
 route.get('/:userId', UserController.GET.users_detail);
 
-route.post('/signup', UserController.POST.users_signup);
-route.post('/login', UserController.POST.users_login);
+route.post('/', UserController.POST.users_signup);
+route.post('/tokens', UserController.POST.users_login);
 
 route.put('/:userId', UserController.PUT.users_update);
 

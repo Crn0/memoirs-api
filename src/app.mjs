@@ -16,6 +16,8 @@ import {
     NODE_ENV,
 } from './constants/env.mjs';
 import * as Routes from './routes/indexRoute.mjs';
+import LocalStrategy from './configs/localStrategy.mjs';
+import errorHandler from './helpers/errors/errorHandler.mjs';
 
 const app = express();
 const __dirname =
@@ -26,6 +28,9 @@ const mongoDb = DB_URI;
 const main = async () => await mongoose.connect(mongoDb);
 
 main().catch(console.error);
+
+// Passport local strategy
+passport.use(LocalStrategy);
 
 app.use(cors());
 
@@ -43,20 +48,12 @@ app.use('/users', Routes.UserRoute);
 app.use('/posts', Routes.PostRoute);
 app.use('/posts', Routes.CommentRoute);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-    next(createError(404));
-});
-
 // error handler
 app.use((err, req, res, _) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = NODE_ENV === 'development' ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+
+
+    errorHandler.handleError(err, res)
 });
 
 export default app;

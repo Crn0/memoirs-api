@@ -1,11 +1,12 @@
 import asyncHandler from 'express-async-handler';
+import passport from 'passport';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import User from '../../../models/userModel.mjs';
+import AuthenticateError from '../../../helpers/errors/authError.mjs';
 import formConstants from '../../../constants/formConstants.mjs';
 import { isUsernameExist, isNotEmpty, isEmailExist, isValidEmail, isPasswordMatch } from '../../../helpers/validators/signupValidators.mjs';
 import FormError from '../../../helpers/errors/formError.mjs';
-import Auth from '../../../helpers/security/authenticate.mjs';
 import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
 
 
@@ -56,7 +57,7 @@ const users_signup = [
                     message,
                 }
             });
-            const error = new FormError('Validation failed', errorFields)
+            const error = new FormError('Validation failed. Invalid form inputs', errorFields)
 
             next(error)
             return;
@@ -102,7 +103,7 @@ const users_login = [
                     message,
                 }
             });
-            const error = new FormError('Validation failed', errorFields)
+            const error = new FormError('Validation failed. please submit the correct format', errorFields)
 
             next(error)
             return;
@@ -110,13 +111,33 @@ const users_login = [
 
         next();
     }),
-    asyncHandler(async (req, res, next) => {
-        Auth.authenticate(req, next)(req, res, next);
-    }),
+    (req, res, next) => {
+    
+        return passport.authenticate('login', (err, user, info) => {
+            if(err) {
+                next(err);
+                return;
+            }
+        
+            if(!user) {
+                const error = new AuthenticateError('Authentication failed', info.message)
+        
+                next(error)
+                return;
+            }
+        
+            req.user = user.toJSON();
+            
+            next();
+        })(req, res, next);
+    },
     asyncHandler(async (req, res) => {
         const { user } = req;
+        // remove the password in the user object;
+        // eslint-disable-next-line no-unused-vars
+        const { password: removeThis, ...currentUser} = user;
 
-        generateAndSendToken(res, user);
+        generateAndSendToken(res, currentUser);
     }),
 ];
 

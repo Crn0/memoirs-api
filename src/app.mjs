@@ -2,8 +2,6 @@ import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
-import passport from 'passport';
-import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import helmet from 'helmet';
@@ -13,10 +11,10 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
     DB_URI,
-    NODE_ENV,
+   
 } from './constants/env.mjs';
 import * as Routes from './routes/indexRoute.mjs';
-import LocalStrategy from './configs/localStrategy.mjs';
+import passportStrategies from './configs/passport.mjs';
 import errorHandler from './helpers/errors/errorHandler.mjs';
 
 const app = express();
@@ -29,8 +27,7 @@ const main = async () => await mongoose.connect(mongoDb);
 
 main().catch(console.error);
 
-// Passport local strategy
-passport.use(LocalStrategy);
+passportStrategies;
 
 app.use(cors());
 

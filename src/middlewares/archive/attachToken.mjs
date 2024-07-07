@@ -1,5 +1,5 @@
-import APIError from "../helpers/errors/apiError.mjs";
-import httpStatusCode from "../constants/httpStatusCode.mjs";
+import APIError from "../../helpers/errors/apiError.mjs";
+import httpStatusCode from "../../constants/httpStatusCode.mjs";
 
 const attachToken = (req, res, next) => {
     const bearerHeader = req.headers['authorization']?.trim?.();

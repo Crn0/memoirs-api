@@ -10,7 +10,7 @@ const isCurrentUser = (req, res, next) => {
         return;
     };
 
-    const error = new APIError('Unauthorize Access', 'You don\'t have authorization to continue this action', 'AuthorizationError', httpStatusCode.UNAUTHORIZED)
+    const error = new APIError('You cannot modify the data. You are not authorized to access this protected resource', 'Unauthorize Access', 'AuthorizationError', httpStatusCode.UNAUTHORIZED)
     
     next(error);
 }

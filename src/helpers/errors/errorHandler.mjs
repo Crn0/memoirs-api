@@ -7,8 +7,11 @@ class ErrorHandler {
                 
         res.status(error.httpCode).json({
             code: error.httpCode || 401,
+            error: {
+                name: error.name,
+                message: error.errors
+            },
             message: error.message,
-            errors: error.errors
         });
     }
 

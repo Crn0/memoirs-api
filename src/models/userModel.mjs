@@ -14,11 +14,14 @@ const userSchema = new Schema({
         enums: ['Author', 'Reader', 'Admin'],
         default: 'Reader',
     },
+    bookmarks: [{ 
+        type: Types.ObjectId, 
+        ref: 'Post' 
+    }],
     likeComments: [{
         type: Types.ObjectId,
         ref: 'Comment',
     }],
-    bookmarks: { type: Types.ObjectId, ref: 'Post' },
 },
 { timestamps: true }
 );

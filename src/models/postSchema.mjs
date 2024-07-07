@@ -7,11 +7,10 @@ const postSchema = new Schema({
     cover: { type: String },
     title: { type: String, required: true },
     body: { type: String, required: true },
-    status: {
-        type: String,
+    isPrivate: {
+        type: Boolean,
         required: true,
-        enum: ['Private', 'Public'],
-        default: 'Public'
+        default: false,
     },
     tags: [{
         type: Types.ObjectId,

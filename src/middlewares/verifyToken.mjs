@@ -1,25 +1,20 @@
-import jwt from 'jsonwebtoken'
+import passport from "passport";
 import APIError from "../helpers/errors/apiError.mjs";
 import httpStatusCode from "../constants/httpStatusCode.mjs";
-import { JWT_SECRET } from '../constants/env.mjs';
 
-
-function verifyToken(req, res, next) {
-    const { token } = req;
-
-    jwt.verify(token, JWT_SECRET, (err, authData) => {
-        if(err) {
-            const error = new APIError('Expired or Invalid Token', 'You don\'t have authorization to view this page', 'AuthorizeError', httpStatusCode.UNAUTHORIZED)
+const verifyToken = (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if(err || !user) {
+            const error = new APIError('You cannot get the details. You are not authorized to access this protected resource', info.message || 'Invalid signature', 'JsonWebTokenError', httpStatusCode.UNAUTHORIZED)
             next(error);
-
-            return;
+            return
         }
         
-        req.user = authData;
-    });
+        req.user = user;
+        
+        next()
 
-    next();
-
-};
+    })(req, res, next)
+}
 
 export default verifyToken;

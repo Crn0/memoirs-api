@@ -9,13 +9,21 @@ const commentSchema = new Schema({
         required: true,
     },
     body: { type: String, required: true },
-    isDeleted: { type: Boolean, default: false },
-    likes: { type: Number, default: 0 },
+    isDeleted: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    likes: {
+        users: [ { type: Types.ObjectId } ],
+        count: { type: Number, default: 0 },
+    },
     post: {
         type: Types.ObjectId,
         ref: 'Post',
         required: true,
     },
+    isReply: { type: Boolean, required: true, default: false},
     replies: [
         {
             type: Types.ObjectId,
@@ -23,5 +31,10 @@ const commentSchema = new Schema({
         }
     ],
 }, { timestamps: { createdAt: 'created_at' } } );
+
+commentSchema.virtual('id').get(function() {
+
+    return `${this._id}`
+})
 
 export default mongoose.model('Comment', commentSchema);

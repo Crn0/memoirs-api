@@ -18,12 +18,15 @@ const userSchema = new Schema({
         type: Types.ObjectId, 
         ref: 'Post' 
     }],
-    likeComments: [{
-        type: Types.ObjectId,
-        ref: 'Comment',
-    }],
+   
 },
 { timestamps: true }
 );
+
+userSchema.virtual('id').get(function() {
+
+    return `${this._id}`
+})
+
 
 export default mongoose.model('User', userSchema);

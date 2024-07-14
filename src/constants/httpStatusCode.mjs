@@ -4,6 +4,7 @@ const NOT_FOUND = 404;
 const INTERNAL_SERVER = 500;
 const UNPROCESSABLE = 422;
 const UNAUTHORIZED = 401
+const BAD_GATEWAY = 502
 
 
 export default {
@@ -13,4 +14,5 @@ export default {
     INTERNAL_SERVER,
     UNPROCESSABLE,
     UNAUTHORIZED,
+    BAD_GATEWAY,
 };

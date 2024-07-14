@@ -1,4 +1,4 @@
-import User from '../../models/userModel.mjs';
+import User from '../../models/userSchema.mjs';
 
 const isUsernameExist = async (val) => {
     try {
@@ -33,10 +33,30 @@ const isNotEmpty = (val) => (val.length > 0);
 
 const isPasswordMatch = (val, { req }) => val === req.body.password;
 
+const validFileType = (val, { req }) => {
+    const extension = req.file ? req.file.mimetype : '';
+
+    switch (extension) {
+        case 'image/jpg':
+            return '.jpg';
+        case 'image/jpeg':
+            return '.jpeg';
+        case 'image/png':
+            return '.png';
+        case 'image/webp':
+            return '.webp';
+        case '':
+            return true;
+        default:
+            return false;
+    }
+};
+
 export {
     isUsernameExist,
     isNotEmpty,
     isEmailExist,
     isValidEmail,
     isPasswordMatch,
+    validFileType
 };

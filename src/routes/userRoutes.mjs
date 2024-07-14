@@ -2,7 +2,6 @@ import { Router } from 'express';
 import UserController from '../controllers/user/index.mjs';
 import verifyToken from '../middlewares/verifyToken.mjs';
 import isAdmin from '../middlewares/isAdmin.mjs';
-import isCurrentUser from '../middlewares/isAdminOrCurrentUser.mjs';
 import validObjectId from '../middlewares/isObjectId.mjs';
 
 
@@ -13,11 +12,12 @@ route.get('/:userId', verifyToken, validObjectId('userId'), UserController.GET.u
 
 route.post('/', UserController.POST.users_signup);
 route.post('/tokens', UserController.POST.users_login);
-// TODO: IMPLEMENT LIKE COMMENTS
-// route.post('/:userId/:commentId', UserController.POST.users_like_comment);
 
-route.put('/:userId', verifyToken, [validObjectId('userId'), isCurrentUser], UserController.PUT.users_update);
 
-route.delete('/:userId', verifyToken, [validObjectId('userId'), isCurrentUser], UserController.DELETE.users_delete);
+route.put('/', validObjectId('userId'), verifyToken, UserController.PUT.users_update);
+route.put('/posts', verifyToken, UserController.PUT.users_bookmark);
+
+route.delete('/', validObjectId('userId'), verifyToken, UserController.DELETE.users_delete);
+route.delete('/posts/:postId', validObjectId('postId'), verifyToken, UserController.DELETE.users_bookmark)
 
 export default route;

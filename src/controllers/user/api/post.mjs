@@ -2,10 +2,10 @@ import asyncHandler from 'express-async-handler';
 import passport from 'passport';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import User from '../../../models/userModel.mjs';
+import User from '../../../models/userSchema.mjs';
 import AuthenticateError from '../../../helpers/errors/authError.mjs';
 import formConstants from '../../../constants/formConstants.mjs';
-import { isUsernameExist, isNotEmpty, isEmailExist, isValidEmail, isPasswordMatch } from '../../../helpers/validators/signupValidators.mjs';
+import { isUsernameExist, isNotEmpty, isEmailExist, isValidEmail, isPasswordMatch } from '../../../helpers/validators/validators.mjs';
 import FormError from '../../../helpers/errors/formError.mjs';
 import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
 
@@ -112,33 +112,22 @@ const users_login = [
         next();
     }),
     (req, res, next) => {
-    
-        return passport.authenticate('login', (err, user, info) => {
+        return passport.authenticate('login', { session: false }, (err, user, info) => {
             if(err) {
-                next(err);
-                return;
+                throw new new AuthenticateError(err.message);
             }
-        
-            if(!user) {
-                const error = new AuthenticateError('Authentication failed', info.message)
-        
-                next(error)
-                return;
-            }
-        
-            req.user = user.toJSON();
-            
-            next();
-        })(req, res, next);
-    },
-    asyncHandler(async (req, res) => {
-        const { user } = req;
-        // remove the password in the user object;
-        // eslint-disable-next-line no-unused-vars
-        const { password: removeThis, ...currentUser} = user;
 
-        generateAndSendToken(res, currentUser);
-    }),
+            if(!user) {
+                throw new AuthenticateError('Authentication failed', info.message);
+            }
+
+            // remove the password in the user object;
+            // eslint-disable-next-line no-unused-vars
+            const { password: removeThis, ...currentUser} = user;
+
+            generateAndSendToken(res, currentUser);
+        })(req, res, next);
+    }
 ];
 
 const users_like_comment = asyncHandler(async (req, res, _) => {

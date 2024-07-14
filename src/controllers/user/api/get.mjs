@@ -1,27 +1,26 @@
 import asyncHandler from 'express-async-handler';
-import User from '../../../models/userModel.mjs'
+import User from '../../../models/userSchema.mjs'
 import APIError from '../../../helpers/errors/apiError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 
 
 const users =  asyncHandler(async (req, res, _) => {
-    const users = await User.find({}).sort({ firstName: 1, lastName: 1 }).exec();
+    const users = await User.find({}, 'firstName lastName email username membership bookmarks likeComments createdAt updatedAt').sort({ firstName: 1, lastName: 1 }).exec();
 
-    res.status(200).json(    
-        users,
-    )
+    res.status(200).json({ users });
         
 })
 
 const users_detail = asyncHandler(async (req, res, _) => {
     const { userId } = req.params;
-    const user = await User.findById(userId);
+    const user = await User.findById(userId, 'firstName lastName email username membership bookmarks createdAt updatedAt').populate(['bookmarks']);
 
     if(!user) {
-        throw new APIError('NOT FOUND', 'User does not exist', 'USER MODEL', httpStatusCode.NOT_FOUND)
+        // Change the user model error name
+        throw new APIError('User does not exist', 'NOT FOUND', 'RESOURCE ERROR', httpStatusCode.NOT_FOUND)
     }
 
-    res.json({
+    res.status(200).json({
         user,
     })
 });

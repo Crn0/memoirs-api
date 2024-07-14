@@ -1,9 +1,10 @@
+import 'dotenv/config';
 import BaseError from "./baseError.mjs";
 
 
 class ErrorHandler {
     handleError(error, res) {
-        console.log(error)
+        process.env.NODE_ENV === 'development' && console.log(error)
                 
         res.status(error.httpCode).json({
             code: error.httpCode || 401,

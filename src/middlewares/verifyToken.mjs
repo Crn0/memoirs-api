@@ -5,12 +5,13 @@ import httpStatusCode from "../constants/httpStatusCode.mjs";
 const verifyToken = (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if(err || !user) {
-            const error = new APIError('You cannot get the details. You are not authorized to access this protected resource', info.message || 'Invalid signature', 'JsonWebTokenError', httpStatusCode.UNAUTHORIZED)
+
+            const error = new APIError('You are not authenticated. Please login to continue', info.message || 'Invalid signature', 'JsonWebTokenError', httpStatusCode.UNAUTHORIZED)
             next(error);
             return
         }
         
-        req.user = user;
+        req.login(user, { session: false });
         
         next()
 

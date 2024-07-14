@@ -3,16 +3,15 @@ import APIError from "../helpers/errors/apiError.mjs";
 import httpStatusCode from "../constants/httpStatusCode.mjs";
 
 const validObjectId = (idName) => (req, res, next) => {
-    const id = req.params[idName];
+    const id = req.params[idName];    
     
     if(mongoose.isValidObjectId(id)) {
-
         next();
 
         return
     }
 
-    const error = new APIError('Bad Request', 'Invalid objectId', 'ClientError', httpStatusCode.BAD_REQUEST);
+    const error = new APIError('Bad Request', `Invalid ${idName}`, 'ClientError', httpStatusCode.BAD_REQUEST);
 
     next(error);
 };

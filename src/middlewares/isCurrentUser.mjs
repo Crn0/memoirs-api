@@ -4,6 +4,7 @@ import httpStatusCode from "../constants/httpStatusCode.mjs";
 const isCurrentUser = (req, res, next) => {
     const { userId } = req.params;
     const { user } = req;    
+  
     if(user._id === userId) {
         next();
 

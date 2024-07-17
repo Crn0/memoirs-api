@@ -33,7 +33,7 @@ postSchema.pre('findOneAndDelete', async function() {
     const id = this.getQuery()._id;
 
     await Comment.deleteMany({ post: id });    
-    await User.updateMany({ $in: { bookmarks: id } }, { $pull: { bookmarks: id }});
+    await User.updateMany({ bookmarks: id }, { $pull: { bookmarks: id }});
 })
 
 export default mongoose.model('Post', postSchema);

@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/bin/www.mjs",
     "dev": "nodemon ./src/bin/www.mjs",
-    "server": "DEBUG=<directory_name>:* npm run dev",
+    "server": "DEBUG=memoirs:* npm run dev",
     "format": "prettier --write \"**/*.{js,mjs}\""
   },
   "keywords": [],
@@ -28,16 +28,19 @@
     "express-validator": "^7.1.0",
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
-    "mongoose": "^8.4.4",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0"
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.6.0",
     "eslint": "^9.6.0",
-    "globals": "^15.6.0",
+    "globals": "^15.8.0",
     "prettier": "3.3.2"
   }
 }

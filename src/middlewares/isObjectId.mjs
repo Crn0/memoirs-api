@@ -1,17 +1,22 @@
-import mongoose from "mongoose";
-import APIError from "../helpers/errors/apiError.mjs";
-import httpStatusCode from "../constants/httpStatusCode.mjs";
+import mongoose from 'mongoose';
+import APIError from '../helpers/errors/apiError.mjs';
+import httpStatusCode from '../constants/httpStatusCode.mjs';
 
 const validObjectId = (idName) => (req, res, next) => {
-    const id = req.params[idName];    
-    
-    if(mongoose.isValidObjectId(id)) {
+    const id = req.params[idName];
+
+    if (mongoose.isValidObjectId(id)) {
         next();
 
-        return
+        return;
     }
 
-    const error = new APIError('Bad Request', `Invalid ${idName}`, 'ClientError', httpStatusCode.BAD_REQUEST);
+    const error = new APIError(
+        'Bad Request',
+        `Invalid ${idName}`,
+        'ClientError',
+        httpStatusCode.BAD_REQUEST
+    );
 
     next(error);
 };

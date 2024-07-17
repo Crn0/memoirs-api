@@ -2,9 +2,11 @@ import User from '../../models/userSchema.mjs';
 
 const isUsernameExist = async (val) => {
     try {
-        const userExist = await User.findOne({ username: val }).collation({ locale: 'en', strength: 2 }).exec();
+        const userExist = await User.findOne({ username: val })
+            .collation({ locale: 'en', strength: 2 })
+            .exec();
 
-        if(userExist) return Promise.reject('username already in use');
+        if (userExist) return Promise.reject('username already in use');
 
         return Promise.resolve();
     } catch (error) {
@@ -14,9 +16,11 @@ const isUsernameExist = async (val) => {
 
 const isEmailExist = async (val) => {
     try {
-        const userExist = await User.findOne({ email: val }).collation({ locale: 'en', strength: 2 }).exec();
+        const userExist = await User.findOne({ email: val })
+            .collation({ locale: 'en', strength: 2 })
+            .exec();
 
-        if(userExist) return Promise.reject('email already in use');
+        if (userExist) return Promise.reject('email already in use');
 
         return Promise.resolve();
     } catch (error) {
@@ -26,10 +30,12 @@ const isEmailExist = async (val) => {
 
 const isValidEmail = (email) => {
     // https://regexr.com/82gr2
-    return  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+    return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        email
+    );
 };
 
-const isNotEmpty = (val) => (val.length > 0);
+const isNotEmpty = (val) => val.length > 0;
 
 const isPasswordMatch = (val, { req }) => val === req.body.password;
 
@@ -58,5 +64,5 @@ export {
     isEmailExist,
     isValidEmail,
     isPasswordMatch,
-    validFileType
+    validFileType,
 };

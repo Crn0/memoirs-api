@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import Tag from "../../../models/tagSchema.mjs";
+import Tag from '../../../models/tagSchema.mjs';
 
 const tags_delete = asyncHandler(async (req, res, _) => {
     const { tagId } = req.params;
@@ -8,7 +8,6 @@ const tags_delete = asyncHandler(async (req, res, _) => {
 
     res.status(204).json({});
 });
-
 
 export default {
     tags_delete,

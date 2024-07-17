@@ -11,56 +11,84 @@ import formConstants from '../constants/formConstants.mjs';
 import FormError from '../helpers/errors/formError.mjs';
 
 const route = Router();
-// GET 
+// GET
 // get all blog post
 route.get('/', attachUser, PostController.GET.posts);
-// GET 
+// GET
 // get a single blog post
-route.get('/:postId', validObjectId('postId'), attachUser, PostController.GET.posts_detail);
+route.get(
+    '/:postId',
+    validObjectId('postId'),
+    attachUser,
+    PostController.GET.posts_detail
+);
 // POST
 // create a new blog post
-route.post('/', [verifyToken, isAdminOrAuthor], (req, res, next) => {
-    upload.single(formConstants.COVER)(req, res, (err) => {
-        if(err instanceof multer.MulterError) {
-            next(new FormError(err.message, {
-                type: 'field',
-                field: err.field,
-                message: err.code
-            }))
-        } else if (err) {
-            next(new FormError(err.message, {
-                type: 'field',
-                field: err.field,
-                message: err.code
-            }))
-        }
+route.post(
+    '/',
+    [verifyToken, isAdminOrAuthor],
+    (req, res, next) => {
+        upload.single(formConstants.COVER)(req, res, (err) => {
+            if (err instanceof multer.MulterError) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            } else if (err) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            }
 
-        next()
-    })
-}, PostController.POST.posts_new);
+            next();
+        });
+    },
+    PostController.POST.posts_new
+);
 // PUT
 // update a blog post
-route.put('/:postId', [validObjectId('postId'), verifyToken, isAdminOrAuthor, isTheAuthorOfPost], (req, res, next) => {
-    upload.single(formConstants.COVER)(req, res, (err) => {
-        if(err instanceof multer.MulterError) {
-            next(new FormError(err.message, {
-                type: 'field',
-                field: err.field,
-                message: err.code
-            }))
-        } else if (err) {
-            next(new FormError(err.message, {
-                type: 'field',
-                field: err.field,
-                message: err.code
-            }))
-        }
+route.put(
+    '/:postId',
+    [validObjectId('postId'), verifyToken, isAdminOrAuthor, isTheAuthorOfPost],
+    (req, res, next) => {
+        upload.single(formConstants.COVER)(req, res, (err) => {
+            if (err instanceof multer.MulterError) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            } else if (err) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            }
 
-        next()
-    })
-}, PostController.PUT.posts_update);
+            next();
+        });
+    },
+    PostController.PUT.posts_update
+);
 // DELETE
 // delete a blog post
-route.delete('/:postId', validObjectId('postId'), verifyToken, PostController.DELETE.posts_delete);
+route.delete(
+    '/:postId',
+    validObjectId('postId'),
+    verifyToken,
+    PostController.DELETE.posts_delete
+);
 
 export default route;

@@ -7,25 +7,24 @@ const fileExtensions = (mimeType) => {
         case 'image/png':
             return '.png';
         case 'image/jpeg':
-            return '.jpeg'
+            return '.jpeg';
         case 'image/jpg':
-            return '.jpeg'
+            return '.jpeg';
         case 'image/webp':
-            return '.webp'
-        
+            return '.webp';
     }
-}
+};
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(import.meta.dirname, '..', 'temp', 'images'))
+        cb(null, path.join(import.meta.dirname, '..', 'temp', 'images'));
     },
     filename: (req, file, cb) => {
-        const name = `${file.fieldname}-${uuid()}${fileExtensions(file.mimetype)}`
-        cb(null, name)
-    }
+        const name = `${file.fieldname}-${uuid()}${fileExtensions(file.mimetype)}`;
+        cb(null, name);
+    },
 });
 
-const upload =  multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 export default upload;

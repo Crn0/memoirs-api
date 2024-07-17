@@ -9,10 +9,7 @@ import logger from 'morgan';
 import { join } from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import {
-    DB_URI,
-   
-} from './constants/env.mjs';
+import { DB_URI } from './constants/env.mjs';
 import * as Routes from './routes/indexRoute.mjs';
 import passportStrategies from './configs/passport.mjs';
 import errorHandler from './helpers/errors/errorHandler.mjs';
@@ -44,12 +41,11 @@ app.use(express.static(join(__dirname, '..', 'public')));
 app.use('/users', Routes.UserRoute);
 app.use('/posts', Routes.PostRoute);
 app.use('/posts', Routes.CommentRoute);
-app.use('/tags', Routes.TagRoute)
+app.use('/tags', Routes.TagRoute);
 
 // error handler
 app.use((err, req, res, _) => {
-
-    errorHandler.handleError(err, res)
+    errorHandler.handleError(err, res);
 });
 
 export default app;

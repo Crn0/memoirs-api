@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import bcrypt from 'bcryptjs';
-import User from '../models/userModel.mjs';
+import User from '../models/userSchema.mjs';
 import { JWT_SECRET } from "../constants/env.mjs";
 
 
@@ -12,7 +12,8 @@ passport.use('login', new LocalStrategy(
     },
     async (email, password, done) => {
         try {
-            const user = await User.findOne({ email }).exec();
+            // CONVERT MONGOOSE OBJECT TO JS
+            const user = await User.findOne({ email }).lean().exec();
     
             if (!user) return done(null, false, { message: 'Incorrect email' });
     

@@ -44,11 +44,10 @@ app.use(express.static(join(__dirname, '..', 'public')));
 app.use('/users', Routes.UserRoute);
 app.use('/posts', Routes.PostRoute);
 app.use('/posts', Routes.CommentRoute);
+app.use('/tags', Routes.TagRoute)
 
 // error handler
 app.use((err, req, res, _) => {
-
-
 
     errorHandler.handleError(err, res)
 });

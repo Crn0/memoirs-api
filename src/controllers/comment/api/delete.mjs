@@ -1,5 +1,4 @@
 import asyncHandler from 'express-async-handler';
-import { body, validationResult } from 'express-validator';
 import Comment from '../../../models/commentSchema.mjs';
 import APIError from '../../../helpers/errors/apiError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
@@ -16,7 +15,7 @@ const comments_delete = asyncHandler(async (req, res, _) => {
 
     await Comment.findOneAndUpdate({ _id: commentId, author: userId }, { isDeleted: true }, { new: true });
 
-    res.status(204).json({});
+    res.status(httpStatusCode.NO_CONTENT).json({});
 });
    
     
@@ -49,7 +48,7 @@ const comments_unlike = asyncHandler(async (req, res, _) => {
     
     await Comment.findByIdAndUpdate(commentId, oldComment, { new: true })
     
-    res.status(200).json({})
+    res.status(httpStatusCode.NO_CONTENT).json({})
 });
 
 export default {

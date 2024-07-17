@@ -5,7 +5,7 @@ const INTERNAL_SERVER = 500;
 const UNPROCESSABLE = 422;
 const UNAUTHORIZED = 401
 const BAD_GATEWAY = 502
-
+const NO_CONTENT = 204
 
 export default {
     OK,
@@ -15,4 +15,5 @@ export default {
     UNPROCESSABLE,
     UNAUTHORIZED,
     BAD_GATEWAY,
+    NO_CONTENT,
 };

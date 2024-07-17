@@ -40,7 +40,7 @@ const comments_update = [
                 post: postId,
         });
     
-        res.status(201).json({ comment });
+        res.status(httpStatusCode.OK).json({ comment });
     })
 ];
 
@@ -66,7 +66,7 @@ const comments_like = asyncHandler(async (req, res, _) => {
     const newComment = await Comment.findByIdAndUpdate(commentId, oldComment, { new: true } )
 
 
-    res.status(201).json({ comment: newComment })
+    res.status(httpStatusCode.OK).json({ comment: newComment })
 });
 
 export default {

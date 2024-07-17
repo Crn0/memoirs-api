@@ -54,7 +54,7 @@ const users_update = [
 
         const user = await User.findByIdAndUpdate(userId, { username, firstName, lastName }, { new: true })
 
-        res.status(200).json({
+        res.status(httpStatusCode.OK).json({
             user,
         })
     })
@@ -98,13 +98,9 @@ const users_bookmark = [
             throw new APIError('post does not exist', 'NOT FOUND', 'RESOURCE ERROR', httpStatusCode.NOT_FOUND);
         }
 
-        await User.updateMany({}, { $unset: { likeComments: 1 } })
-
         const user = await User.findByIdAndUpdate(userId, { $push: { bookmarks: postId }}, { new: true, projection: '-password' });
 
-
-
-        res.status(200).json({ user });
+        res.status(httpStatusCode.OK).json({ user });
     })
 ];
 

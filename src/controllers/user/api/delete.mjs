@@ -35,7 +35,7 @@ const users_bookmark = asyncHandler(async (req, res, _) => {
 
     await User.findByIdAndUpdate(userId, { $pull: { bookmarks: postId }}, { new: true });
 
-    res.status(204).json({});
+    res.status(httpStatusCode.NO_CONTENT).json({});
 })
 
 

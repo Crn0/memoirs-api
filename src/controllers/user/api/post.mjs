@@ -35,7 +35,7 @@ const users_signup = [
         .escape(),
     body(formConstants.EMAIL)
         .trim()
-        .custom(isValidEmail)
+        .isEmail()
         .withMessage('invalid email')
         .custom(isEmailExist)
         .escape(),
@@ -92,7 +92,7 @@ const users_signup = [
 const users_login = [
     body(formConstants.EMAIL)
         .trim()
-        .custom(isValidEmail)
+        .isEmail()
         .withMessage('invalid email')
         .escape(),
     body(formConstants.PWD)

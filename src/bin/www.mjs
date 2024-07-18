@@ -34,12 +34,16 @@ const cleanupImage = async () => {
         await unlink(filePath);
     });
 };
+
+// add so the process does not end immediately
+process.stdin.resume();
 /**
  *  remove the uploaded image when the server closed
  */
 [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].map(
     (eventType) => {
         process.on(eventType, async () => {
+            console.log(eventType)
             await cleanupImage();
 
             process.exit(0);

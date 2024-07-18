@@ -8,10 +8,8 @@ import {
     isNotEmpty,
 } from '../../../helpers/validators/validators.mjs';
 import FormError from '../../../helpers/errors/formError.mjs';
-import APIError from '../../../helpers/errors/apiError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 import Cloudinary from '../../../helpers/media/cloudinary.mjs';
-import url from 'node:url';
 
 /**
     TODO:

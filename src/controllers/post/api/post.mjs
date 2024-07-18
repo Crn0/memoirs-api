@@ -8,6 +8,7 @@ import {
     isNotEmpty,
     validFileType,
 } from '../../../helpers/validators/validators.mjs';
+import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 import Cloudinary from '../../../helpers/media/cloudinary.mjs';
 
 /**
@@ -98,7 +99,7 @@ const posts_new = [
 
         await post.save();
 
-        res.status(201).json({ post });
+        res.status(httpStatusCode.CREATED).json({ post });
     }),
 ];
 

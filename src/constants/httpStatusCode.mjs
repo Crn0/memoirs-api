@@ -6,6 +6,7 @@ const UNPROCESSABLE = 422;
 const UNAUTHORIZED = 401;
 const BAD_GATEWAY = 502;
 const NO_CONTENT = 204;
+const CREATED = 201
 
 export default {
     OK,
@@ -16,4 +17,5 @@ export default {
     UNAUTHORIZED,
     BAD_GATEWAY,
     NO_CONTENT,
+    CREATED,
 };

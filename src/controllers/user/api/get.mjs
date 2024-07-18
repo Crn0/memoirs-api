@@ -11,7 +11,7 @@ const users = asyncHandler(async (req, res, _) => {
         .sort({ firstName: 1, lastName: 1 })
         .exec();
 
-    res.status(200).json({ users });
+    res.status(httpStatusCode.OK).json({ users });
 });
 
 const users_detail = asyncHandler(async (req, res, _) => {
@@ -31,7 +31,7 @@ const users_detail = asyncHandler(async (req, res, _) => {
         );
     }
 
-    res.status(200).json({
+    res.status(httpStatusCode.OK).json({
         user,
     });
 });

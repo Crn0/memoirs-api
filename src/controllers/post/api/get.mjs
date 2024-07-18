@@ -46,7 +46,7 @@ const posts = asyncHandler(async (req, res, _) => {
         .sort({ [sortKey]: sortOrder });
     const total = await Post.countDocuments().exec();
 
-    res.json({
+    res.status(httpStatusCode.OK).json({
         posts,
         total,
         limit: Number(limit) || 10,
@@ -71,7 +71,7 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             );
         }
 
-        res.status(200).json({ post });
+        res.status(httpStatusCode.OK).json({ post });
 
         return;
     }
@@ -105,7 +105,7 @@ const posts_detail = asyncHandler(async (req, res, _) => {
         );
     }
 
-    res.status(200).json({
+    res.status(httpStatusCode.OK).json({
         post,
         comments,
     });

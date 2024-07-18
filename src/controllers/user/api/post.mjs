@@ -14,6 +14,7 @@ import {
 } from '../../../helpers/validators/validators.mjs';
 import FormError from '../../../helpers/errors/formError.mjs';
 import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
+import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 
 const users_signup = [
     body(formConstants.FIRST_NAME)
@@ -82,7 +83,7 @@ const users_signup = [
             // membership: 'Admin'
         });
 
-        res.status(201).json({
+        res.status(httpStatusCode.CREATED).json({
             message: 'successful sign up. please login.',
         });
     }),
@@ -162,7 +163,7 @@ const users_like_comment = asyncHandler(async (req, res, _) => {
         { new: true }
     );
 
-    res.status(200).json({
+    res.status(httpStatusCode.OK).json({
         user,
     });
 });

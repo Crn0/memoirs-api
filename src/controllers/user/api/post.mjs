@@ -9,7 +9,6 @@ import {
     isUsernameExist,
     isNotEmpty,
     isEmailExist,
-    isValidEmail,
     isPasswordMatch,
 } from '../../../helpers/validators/validators.mjs';
 import FormError from '../../../helpers/errors/formError.mjs';
@@ -129,14 +128,14 @@ const users_login = [
             { session: false },
             (err, user, info) => {
                 if (err) {
-                    throw new AuthenticateError(err.message)();
+                    next(new AuthenticateError(err.message));
                 }
 
-                if (!user) {
-                    throw new AuthenticateError(
+                if (!user || info) {
+                    next(new AuthenticateError(
                         'Authentication failed',
                         info.message
-                    );
+                    ));
                 }
 
                 // remove the password in the user object;

@@ -6,20 +6,19 @@ import verifyToken from '../middlewares/verifyToken.mjs';
 import isAdminOrAuthor from '../middlewares/isAdminOrAuthor.mjs';
 import validObjectId from '../middlewares/isObjectId.mjs';
 import isTheAuthorOfPost from '../middlewares/isPostAuthor.mjs';
-import attachUser from '../middlewares/attachUser.mjs';
 import formConstants from '../constants/formConstants.mjs';
 import FormError from '../helpers/errors/formError.mjs';
 
 const route = Router();
 // GET
 // get all blog post
-route.get('/', attachUser, PostController.GET.posts);
+route.get('/', verifyToken, PostController.GET.posts);
 // GET
 // get a single blog post
 route.get(
     '/:postId',
     validObjectId('postId'),
-    attachUser,
+    verifyToken,
     PostController.GET.posts_detail
 );
 // POST

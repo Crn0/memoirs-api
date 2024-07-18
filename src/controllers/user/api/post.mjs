@@ -128,7 +128,7 @@ const users_login = [
             { session: false },
             (err, user, info) => {
                 if (err) {
-                    throw new new AuthenticateError(err.message)();
+                    throw new AuthenticateError(err.message)();
                 }
 
                 if (!user) {

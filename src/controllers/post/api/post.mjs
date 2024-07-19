@@ -20,7 +20,11 @@ import Cloudinary from '../../../helpers/media/cloudinary.mjs';
  */
 const posts_new = [
     (req, res, next) => {
-        if (!Array.isArray(req.body.tags)) {
+        if(typeof req.body.tags !== 'undefined') {
+            req.body.tags = JSON.parse(req.body.tags);
+        }
+
+        if(!Array.isArray(req.body.tags)) {
             req.body.tags =
                 typeof req.body.tags === 'undefined' ? [] : [req.body.tags];
         }
@@ -51,7 +55,7 @@ const posts_new = [
         .withMessage('Post body must not be empty')
         .escape(),
     body(formConstants.STATUS).trim().escape(),
-    body(`${formConstants.TAGS}.*`).trim().escape(),
+    body(`${formConstants.TAGS}.*`).trim(),
     asyncHandler(async (req, res, _) => {
         const { title, body, status, tags } = req.body;
         const errors = validationResult(req);

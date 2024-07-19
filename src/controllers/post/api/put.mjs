@@ -20,6 +20,18 @@ import Cloudinary from '../../../helpers/media/cloudinary.mjs';
         implement cover image update
  */
 const posts_update = [
+    (req, res, next) => {
+        if(typeof req.body.tags !== 'undefined') {
+            req.body.tags = JSON.parse(req.body.tags);
+        }
+
+        if(!Array.isArray(req.body.tags)) {
+            req.body.tags =
+                typeof req.body.tags === 'undefined' ? [] : [req.body.tags];
+        }
+
+        next();
+    },
     body('image_url')
         .trim()
         .custom(isNotEmpty)
@@ -62,7 +74,7 @@ const posts_update = [
         .withMessage('Post body must not be empty')
         .escape(),
     body(formName.STATUS).trim().escape(),
-    body(`${formName.TAGS}.*`).trim().escape(),
+    body(`${formName.TAGS}.*`).trim(),
     asyncHandler(async (req, res, _) => {
         const { user } = req;
         const { postId } = req.params;

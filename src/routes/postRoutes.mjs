@@ -8,17 +8,18 @@ import validObjectId from '../middlewares/isObjectId.mjs';
 import isTheAuthorOfPost from '../middlewares/isPostAuthor.mjs';
 import formConstants from '../constants/formConstants.mjs';
 import FormError from '../helpers/errors/formError.mjs';
+import attachUser from '../middlewares/attachUser.mjs'
 
 const route = Router();
 // GET
 // get all blog post
-route.get('/', verifyToken, PostController.GET.posts);
+route.get('/', attachUser, PostController.GET.posts);
 // GET
 // get a single blog post
 route.get(
     '/:postId',
     validObjectId('postId'),
-    verifyToken,
+    attachUser,
     PostController.GET.posts_detail
 );
 // POST

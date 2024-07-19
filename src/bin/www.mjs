@@ -43,9 +43,14 @@ process.stdin.resume();
 [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].map(
     (eventType) => {
         process.on(eventType, async () => {
-            await cleanupImage();
-
-            process.exit(0);
+            try {
+                await cleanupImage();
+                process.exit(0);
+                
+            } catch (error) {
+                console.error(error)
+                process.exit(1);
+            }
         });
     }
 );

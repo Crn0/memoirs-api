@@ -14,6 +14,12 @@ const users = asyncHandler(async (req, res, _) => {
     res.status(httpStatusCode.OK).json({ users });
 });
 
+const users_token = asyncHandler(async (req, res, _) => {
+    const user = req.user;
+
+    res.status(httpStatusCode.OK).json({ user });
+});
+
 const users_detail = asyncHandler(async (req, res, _) => {
     const { userId } = req.params;
     const user = await User.findById(
@@ -39,4 +45,5 @@ const users_detail = asyncHandler(async (req, res, _) => {
 export default {
     users,
     users_detail,
+    users_token,
 };

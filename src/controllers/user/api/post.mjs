@@ -89,15 +89,19 @@ const users_signup = [
 ];
 
 const users_login = [
+    (req, res, next) => {
+        console.log(req.body)
+        next()
+    },
     body(formConstants.EMAIL)
         .trim()
         .isEmail()
-        .withMessage('invalid email')
+        .withMessage('The email is not a valid email address')
         .escape(),
     body(formConstants.PWD)
         .trim()
         .custom((value) => value.length > 0)
-        .withMessage('password must not be empty')
+        .withMessage('Password must not be empty')
         .escape(),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
@@ -112,7 +116,7 @@ const users_login = [
                 };
             });
             const error = new FormError(
-                'Validation failed. please submit the correct format',
+                'Validation Failed',
                 errorFields
             );
 
@@ -127,6 +131,7 @@ const users_login = [
             'login',
             { session: false },
             (err, user, info) => {
+                console.log(err,user,info)
                 if (err) {
                     next(new AuthenticateError(err.message));
                 }

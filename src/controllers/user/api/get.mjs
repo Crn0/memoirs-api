@@ -14,7 +14,7 @@ const users = asyncHandler(async (req, res, _) => {
     res.status(httpStatusCode.OK).json({ users });
 });
 
-const users_token = asyncHandler(async (req, res, _) => {
+const users_token_me = asyncHandler(async (req, res, _) => {
     const user = req.user;
 
     res.status(httpStatusCode.OK).json({ user });
@@ -45,5 +45,5 @@ const users_detail = asyncHandler(async (req, res, _) => {
 export default {
     users,
     users_detail,
-    users_token,
+    users_token_me,
 };

@@ -19,34 +19,38 @@ const users_signup = [
     body(formConstants.FIRST_NAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('firstName must not be empty')
-        .escape(),
+        .withMessage('First name must not be empty'),
     body(formConstants.LAST_NAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('lastName must not be empty')
-        .escape(),
+        .withMessage('Last name must not be empty'),
     body(formConstants.USERNAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('username must not be empty')
+        .withMessage('Username must not be empty')
         .custom(isUsernameExist)
+        .custom((val) => {
+            const regex = /^[{a-zA-Z}]{1,}\d{0,}[{a-zA-Z}]{0,}$/g;
+            // https://regexr.com/83re3
+            return regex.test(val)
+        })
+        .withMessage('Username must not contain special characters.')
         .escape(),
     body(formConstants.EMAIL)
         .trim()
         .isEmail()
-        .withMessage('invalid email')
+        .withMessage('The email is not a valid email address')
         .custom(isEmailExist)
         .escape(),
     body(formConstants.PWD)
         .trim()
         .custom((value) => value.length > 0)
-        .withMessage('password must not be empty')
+        .withMessage('Password must not be empty')
         .escape(),
     body(formConstants.CONFIRM_PWD)
         .trim()
         .custom(isPasswordMatch)
-        .withMessage('password does not match')
+        .withMessage('Password does not match')
         .escape(),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);

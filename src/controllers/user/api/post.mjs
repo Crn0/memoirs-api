@@ -79,7 +79,6 @@ const users_signup = [
             email,
             username,
             password: hashedPassword,
-            // membership: 'Admin'
         });
 
         res.status(httpStatusCode.CREATED).json({
@@ -131,7 +130,6 @@ const users_login = [
             'login',
             { session: false },
             (err, user, info) => {
-                console.log(err,user,info)
                 if (err) {
                     next(new AuthenticateError(err.message));
                 }

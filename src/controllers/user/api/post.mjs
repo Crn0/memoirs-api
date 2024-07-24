@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import User from '../../../models/userSchema.mjs';
@@ -14,6 +15,7 @@ import {
 import FormError from '../../../helpers/errors/formError.mjs';
 import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
+import { JWT_EXP, JWT_SECRET } from '../../../constants/env.mjs';
 
 const users_signup = [
     body(formConstants.FIRST_NAME)
@@ -77,7 +79,7 @@ const users_signup = [
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.create({
+        const user = await User.create({
             firstName,
             lastName,
             email,
@@ -85,15 +87,14 @@ const users_signup = [
             password: hashedPassword,
         });
 
-        res.status(httpStatusCode.CREATED).json({
-            message: 'successful sign up. please login.',
-        });
+        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: JWT_EXP});
+
+        res.status(httpStatusCode.CREATED).json({user, token});
     }),
 ];
 
 const users_login = [
     (req, res, next) => {
-        console.log(req.body)
         next()
     },
     body(formConstants.EMAIL)

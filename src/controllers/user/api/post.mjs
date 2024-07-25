@@ -47,13 +47,11 @@ const users_signup = [
     body(formConstants.PWD)
         .trim()
         .custom((value) => value.length > 0)
-        .withMessage('Password must not be empty')
-        .escape(),
+        .withMessage('Password must not be empty'),
     body(formConstants.CONFIRM_PWD)
         .trim()
         .custom(isPasswordMatch)
-        .withMessage('Password does not match')
-        .escape(),
+        .withMessage('Password does not match'),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;

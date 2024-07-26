@@ -62,6 +62,8 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             .populate('author', 'firstName lastName username')
             .populate('tags', { sort: { name: 1 } });
 
+        const comments = await Comment.find({ post: postId }).populate('author', 'firstName lastName username').sort({ created_at: 1 });
+
         if (post === null) {
             throw new APIError(
                 'post does not exist',
@@ -71,7 +73,7 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             );
         }
 
-        res.status(httpStatusCode.OK).json({ post });
+        res.status(httpStatusCode.OK).json({ post, comments });
 
         return;
     }

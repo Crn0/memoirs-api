@@ -12,8 +12,7 @@ const comments_new = [
     body(formConstants.BODY)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('Message body must not be empty')
-        .escape(),
+        .withMessage('Message body must not be empty'),
     asyncHandler(async (req, res, _) => {
         const { user } = req;
         const { postId } = req.params;

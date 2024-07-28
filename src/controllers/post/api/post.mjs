@@ -52,8 +52,7 @@ const posts_new = [
     body(formConstants.BODY)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('Post body must not be empty')
-        .escape(),
+        .withMessage('Post body must not be empty'),
     body(formConstants.STATUS).trim().escape(),
     body(`${formConstants.TAGS}.*`).trim(),
     asyncHandler(async (req, res, _) => {

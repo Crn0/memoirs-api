@@ -55,12 +55,14 @@ const posts = asyncHandler(async (req, res, _) => {
 
 const posts_detail = asyncHandler(async (req, res, _) => {
     const { postId } = req.params;
-    const id = req.user._id;
+    const id = req.user?._id;
 
-    if (req.user.membership === 'Admin') {
+    if (req.user?.membership === 'Admin') {
         const post = await Post.findById(postId)
             .populate('author', 'firstName lastName username')
             .populate('tags', { sort: { name: 1 } });
+
+        const comments = await Comment.find({ post: postId }).populate('author', 'firstName lastName username').sort({ created_at: 1 });
 
         if (post === null) {
             throw new APIError(
@@ -71,7 +73,7 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             );
         }
 
-        res.status(httpStatusCode.OK).json({ post });
+        res.status(httpStatusCode.OK).json({ post, comments });
 
         return;
     }

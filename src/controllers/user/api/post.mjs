@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import User from '../../../models/userSchema.mjs';
@@ -14,40 +15,43 @@ import {
 import FormError from '../../../helpers/errors/formError.mjs';
 import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
+import { JWT_EXP, JWT_SECRET } from '../../../constants/env.mjs';
 
 const users_signup = [
     body(formConstants.FIRST_NAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('firstName must not be empty')
-        .escape(),
+        .withMessage('First name must not be empty'),
     body(formConstants.LAST_NAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('lastName must not be empty')
-        .escape(),
+        .withMessage('Last name must not be empty'),
     body(formConstants.USERNAME)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('username must not be empty')
+        .withMessage('Username must not be empty')
         .custom(isUsernameExist)
+        .custom((val) => {
+            const regex = /^[{a-zA-Z}]{1,}\d{0,}[{a-zA-Z}]{0,}$/g;
+            // https://regexr.com/83re3
+            return regex.test(val)
+        })
+        .withMessage('Username must not contain special characters.')
         .escape(),
     body(formConstants.EMAIL)
         .trim()
         .isEmail()
-        .withMessage('invalid email')
+        .withMessage('The email is not a valid email address')
         .custom(isEmailExist)
         .escape(),
     body(formConstants.PWD)
         .trim()
         .custom((value) => value.length > 0)
-        .withMessage('password must not be empty')
-        .escape(),
+        .withMessage('Password must not be empty'),
     body(formConstants.CONFIRM_PWD)
         .trim()
         .custom(isPasswordMatch)
-        .withMessage('password does not match')
-        .escape(),
+        .withMessage('Password does not match'),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;
@@ -73,31 +77,33 @@ const users_signup = [
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.create({
+        const user = await User.create({
             firstName,
             lastName,
             email,
             username,
             password: hashedPassword,
-            // membership: 'Admin'
         });
 
-        res.status(httpStatusCode.CREATED).json({
-            message: 'successful sign up. please login.',
-        });
+        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: JWT_EXP});
+
+        res.status(httpStatusCode.CREATED).json({user, token});
     }),
 ];
 
 const users_login = [
+    (req, res, next) => {
+        next()
+    },
     body(formConstants.EMAIL)
         .trim()
         .isEmail()
-        .withMessage('invalid email')
+        .withMessage('The email is not a valid email address')
         .escape(),
     body(formConstants.PWD)
         .trim()
         .custom((value) => value.length > 0)
-        .withMessage('password must not be empty')
+        .withMessage('Password must not be empty')
         .escape(),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
@@ -112,7 +118,7 @@ const users_login = [
                 };
             });
             const error = new FormError(
-                'Validation failed. please submit the correct format',
+                'Validation Failed',
                 errorFields
             );
 

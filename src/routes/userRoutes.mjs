@@ -7,6 +7,7 @@ import validObjectId from '../middlewares/isObjectId.mjs';
 const route = Router();
 
 route.get('/', verifyToken, isAdmin, UserController.GET.users);
+route.get('/token/me', verifyToken, UserController.GET.users_token_me);
 route.get(
     '/:userId',
     verifyToken,

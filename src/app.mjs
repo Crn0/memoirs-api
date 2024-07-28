@@ -13,6 +13,7 @@ import { DB_URI } from './constants/env.mjs';
 import * as Routes from './routes/indexRoute.mjs';
 import passportStrategies from './configs/passport.mjs';
 import errorHandler from './helpers/errors/errorHandler.mjs';
+import corsOptions from './configs/cors.mjs';
 
 const app = express();
 const __dirname =
@@ -26,10 +27,7 @@ main().catch(console.error);
 
 passportStrategies;
 
-const corsOptions = {
-    origin: 'http://http://localhost:5173',
-    optionsSuccessStatus: 200
-  }
+
 
 app.use(cors(corsOptions));
 

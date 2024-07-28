@@ -1,5 +1,5 @@
 const corsOptions = {
-    origin: ['http://localhost:5172', 'https://test-blog-deploy-memoirs.netlify.app'],
+    origin: ['http://localhost:5173', 'https://test-blog-deploy-memoirs.netlify.app'],
     methods: 'GET,HEAD,PUT,POST,DELETE',
     optionsSuccessStatus: 200
 }

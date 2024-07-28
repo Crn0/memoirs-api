@@ -26,7 +26,12 @@ main().catch(console.error);
 
 passportStrategies;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://http://localhost:5173',
+    optionsSuccessStatus: 200
+  }
+
+app.use(cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());

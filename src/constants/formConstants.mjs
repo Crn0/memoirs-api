@@ -15,6 +15,7 @@ const IS_DELETED = 'isDelete';
 const IS_AUTHOR = 'author';
 const MEMBERSHIP = 'membership';
 const POST_ID = 'postId';
+const AUTH_PWD = 'authorization_password'
 
 export default {
     NAME,
@@ -34,4 +35,5 @@ export default {
     IS_DELETED,
     IS_AUTHOR,
     POST_ID,
+    AUTH_PWD,
 };

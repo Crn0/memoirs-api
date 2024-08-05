@@ -6,6 +6,35 @@ import User from '../models/userSchema.mjs';
 import { JWT_SECRET } from '../constants/env.mjs';
 
 passport.use(
+    'author_login',
+    new LocalStrategy(
+        {
+            usernameField: 'email',
+        },
+        async (email, password, done) => {
+            try {
+                // CONVERT MONGOOSE OBJECT TO JS
+                const user = await User.findOne({ email }).lean().exec();
+
+                if (!user)
+                    return done(null, false, { message: 'Invalid email or password' });
+
+                const match = await bcrypt.compare(password, user.password);
+
+                if (!match)
+                    return done(null, false, { message: 'Invalid email or password' });
+
+                if (user.membership !== 'author' || user.membership !== 'admin')
+                    return done(null, false, { message: 'Access Denied: Not authorized.' });
+
+                return done(null, user);
+            } catch (error) {
+                return done(error);
+            }
+        },
+    )
+);
+passport.use(
     'login',
     new LocalStrategy(
         {

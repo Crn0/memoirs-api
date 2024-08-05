@@ -16,7 +16,9 @@ route.get(
 );
 
 route.post('/', UserController.POST.users_signup);
+route.post('/authors', UserController.POST.users_authors_signup);
 route.post('/tokens', UserController.POST.users_login);
+route.post('/authors/tokens', UserController.POST.users_authors_login);
 
 route.put(
     '/',

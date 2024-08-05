@@ -173,7 +173,7 @@ const users_authors_signup =  [
             // https://regexr.com/83re3
             return regex.test(val)
         })
-        .withMessage('Username must not contain special characters.')
+        .withMessage('Username must not contain special characters')
         .escape(),
     body(formConstants.EMAIL)
         .trim()

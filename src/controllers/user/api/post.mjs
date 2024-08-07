@@ -52,7 +52,7 @@ const users_signup = [
         .trim()
         .custom(isPasswordMatch)
         .withMessage('Password does not match'),
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res, _) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;
 
@@ -66,13 +66,10 @@ const users_signup = [
                     message,
                 };
             });
-            const error = new FormError(
+            throw new FormError(
                 'Validation failed. Invalid form inputs',
                 errorFields
             );
-
-            next(error);
-            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -92,9 +89,6 @@ const users_signup = [
 ];
 
 const users_login = [
-    (req, res, next) => {
-        next()
-    },
     body(formConstants.EMAIL)
         .trim()
         .isEmail()
@@ -117,13 +111,10 @@ const users_login = [
                     message,
                 };
             });
-            const error = new FormError(
+            throw new FormError(
                 'Validation Failed',
                 errorFields
             );
-
-            next(error);
-            return;
         }
 
         next();
@@ -196,7 +187,7 @@ const users_authors_signup =  [
             return val === process.env.AUTH_PWD;
         })
         .withMessage('Access Denied: Not authorized.'),
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res, _) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;
 
@@ -210,13 +201,10 @@ const users_authors_signup =  [
                     message,
                 };
             });
-            const error = new FormError(
+            throw new FormError(
                 'Validation failed. Invalid form inputs',
                 errorFields
             );
-
-            next(error);
-            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -262,13 +250,10 @@ const users_authors_login = [
                     message,
                 };
             });
-            const error = new FormError(
+            throw new FormError(
                 'Validation Failed',
                 errorFields
             );
-
-            next(error);
-            return;
         }
 
         next();

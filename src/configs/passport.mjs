@@ -23,8 +23,8 @@ passport.use(
 
                 if (!match)
                     return done(null, false, { message: 'Invalid email or password' });
-
-                if (user.membership !== 'author' || user.membership !== 'admin')
+                
+                if (user.membership.toLowerCase() !== 'author' && user.membership.toLowerCase() !== 'admin')
                     return done(null, false, { message: 'Access Denied: Not authorized.' });
 
                 return done(null, user);

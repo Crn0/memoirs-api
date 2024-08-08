@@ -80,13 +80,13 @@ const posts_new = [
          * in your frontend make an post request on the /tags to create it
          **/
         const tagList = await Tag.find({ name: tags });
-
+        
         const post = await Post({
             title,
             body,
             author: req.user._id,
             tags: tagList,
-            isPrivate: status !== '' ? status : false,
+            isPrivate: status.toLowerCase() === 'true' ? true : false,
         });
 
         if (req.file) {

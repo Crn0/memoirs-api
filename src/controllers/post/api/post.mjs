@@ -20,7 +20,7 @@ import Cloudinary from '../../../helpers/media/cloudinary.mjs';
  */
 const posts_new = [
     (req, res, next) => {
-        if(typeof req.body.tags !== 'undefined') {
+        if(req.body.tags !== '' && typeof req.body.tags !== 'undefined') {
             req.body.tags = JSON.parse(req.body.tags);
         }
 

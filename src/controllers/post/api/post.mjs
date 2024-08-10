@@ -21,7 +21,7 @@ import Cloudinary from '../../../helpers/media/cloudinary.mjs';
 const posts_new = [
     (req, res, next) => {
         if(req.body.tags !== '' && typeof req.body.tags !== 'undefined') {
-            req.body.tags = JSON.parse(req.body.tags);
+            req.body.tags = JSON.parse(req.body.tags.trim());
         }
 
         if(!Array.isArray(req.body.tags)) {
@@ -79,14 +79,37 @@ const posts_new = [
          * make sure the tag is created before creating a post
          * in your frontend make an post request on the /tags to create it
          **/
-        const tagList = await Tag.find({ name: tags });
-        
+        let tagList = await Tag.find({ name: tags });
+        const tagsName = new Set(tagList.map((tag) => tag.name))
+      
+        const tagsToInsert = tags.reduce((prev, name) => {
+            if (!tagsName.has(name)) {
+                if(Array.isArray(prev)) {
+                    return [...prev, { name }]
+                } else {
+                    if (name.trim() !== "") return [{ name }];
+
+                    return null
+                }
+            }
+        }, {})
+
+        if (tagsToInsert?.length) {
+            const createTags = await Tag.insertMany(tagsToInsert);
+
+            tagList = [...tagList, ...createTags];
+        }
+
         const post = await Post({
             title,
             body,
             author: req.user._id,
             tags: tagList,
-            isPrivate: status.toLowerCase() === 'true' ? true : false,
+            isPrivate: (() => {
+                if (status.toLowerCase() === 'true') return true;
+
+                return false
+            })(),
         });
 
         if (req.file) {

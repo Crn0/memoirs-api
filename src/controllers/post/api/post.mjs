@@ -124,6 +124,7 @@ const posts_new = [
         }
 
         await post.save();
+        await post.populate('author', 'firstName lastName username');
 
         res.status(httpStatusCode.CREATED).json({ post });
     }),

@@ -1,5 +1,6 @@
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { v4 as uuid } from 'uuid';
 
 const fileExtensions = (mimeType) => {
@@ -17,7 +18,7 @@ const fileExtensions = (mimeType) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(import.meta.dirname, '..', 'temp', 'images'));
+        cb(null, path.join(import.meta.dirname || path.dirname(fileURLToPath(import.meta.url)), '..', 'temp', 'images'));
     },
     filename: (req, file, cb) => {
         const name = `${file.fieldname}-${uuid()}${fileExtensions(file.mimetype)}`;
@@ -26,5 +27,5 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
+console.log(path.join(import.meta.dirname , '..', 'temp', 'images'))
 export default upload;

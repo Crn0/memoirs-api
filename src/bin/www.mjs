@@ -30,7 +30,9 @@ const cleanupImage = async () => {
 
     res.map(async (fileName) => {
         const filePath = `${path.join(__dirname, '..', 'temp', 'images')}/${fileName}`;
-        console.log(filePath);
+
+        if (fileName === '.gitkeep') return;
+        
         await unlink(filePath);
     });
 };

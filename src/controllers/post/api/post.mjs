@@ -126,6 +126,11 @@ const posts_new = [
         await post.save();
         await post.populate('author', 'firstName lastName username');
 
+        if (post.tags.length) {
+            await post.populate('tags', 'name');
+
+        }
+
         res.status(httpStatusCode.CREATED).json({ post });
     }),
 ];

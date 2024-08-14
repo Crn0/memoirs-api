@@ -62,8 +62,8 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             .populate('author', 'firstName lastName username')
             .populate('tags', '_id name', null, { sort: { name: 1 } });
 
-        const comments = await Comment.find({ post: postId }).populate('author', 'firstName lastName username').sort({ created_at: 1 }).populate('tags', { sort: { name: 1 } });;
-        console.log(post)
+        const comments = await Comment.find({ post: postId }).populate('author', 'firstName lastName username').sort({ created_at: 1 });
+        
         if (post === null) {
             throw new APIError(
                 'post does not exist',

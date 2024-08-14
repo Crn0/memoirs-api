@@ -39,4 +39,8 @@ commentSchema.virtual('id').get(function () {
     return `${this._id}`;
 });
 
+commentSchema.virtual('postId').get(function () {
+    return `${this.post._id.toString()}`;
+});
+
 export default mongoose.model('Comment', commentSchema);

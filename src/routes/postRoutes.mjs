@@ -14,6 +14,11 @@ const route = Router();
 // GET
 // get all blog post
 route.get('/', attachUser, PostController.GET.posts);
+route.get(
+    '/author',
+    verifyToken,
+    PostController.GET.posts_author
+);
 // GET
 // get a single blog post
 route.get(

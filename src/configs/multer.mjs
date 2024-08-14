@@ -27,5 +27,5 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-console.log(path.join(import.meta.dirname , '..', 'temp', 'images'))
+
 export default upload;

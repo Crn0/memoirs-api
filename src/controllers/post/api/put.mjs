@@ -126,6 +126,55 @@ const posts_update = [
     }),
 ];
 
+const posts_status = [
+    body(formName.STATUS)
+    .trim()
+    .custom((val) => {
+        if (val === 'true') return false;
+        if (val === 'false') return false;
+
+        return true;
+    })
+    .withMessage('status must be a boolean')
+    .escape(),
+    asyncHandler(async (req, res, _) => {
+        const { postId } = req.params;
+        const { status } = req.body;
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            const errorFields = errors.array().map((err) => {
+                const { type, msg: message, path: field } = err;
+
+                return {
+                    type,
+                    field,
+                    message,
+                };
+            });
+
+            throw new FormError(
+                'Validation failed. Invalid form inputs',
+                errorFields
+            );
+        }
+
+
+        const post = await Post.findByIdAndUpdate(postId, {
+            isPrivate: (() => {
+                if (status === 'true') return true;
+
+                return false;
+            })()
+        }, {
+            new: true,
+        });
+
+        res.status(httpStatusCode.OK).json({ post });
+    }),
+]
+
 export default {
     posts_update,
+    posts_status
 };

@@ -53,6 +53,34 @@ const posts = asyncHandler(async (req, res, _) => {
     });
 });
 
+const posts_author = asyncHandler(async (req, res, _) => {
+    const { limit, sortBy } = req.query;
+    const sortKey =
+        sortBy
+            ?.split(/[x^+-]/)
+            ?.join('')
+            ?.trim() || 'title';
+    const sortOrder = sortBy?.includes('-') ? -1 : 1;
+
+    const posts = await Post.find({ author: req.user?._id })
+        .limit(limit || 10)
+        .populate('author', 'firstName lastName username')
+        .populate({
+            path: 'tags',
+            select: 'name',
+            options: { sort: { name: 1 } },
+        })
+        .sort({ [sortKey]: sortOrder });
+
+    const total = await Post.countDocuments().exec();
+
+    res.status(httpStatusCode.OK).json({
+        posts,
+        total,
+        limit: Number(limit) || 10,
+    });
+});
+
 const posts_detail = asyncHandler(async (req, res, _) => {
     const { postId } = req.params;
     const id = req.user?._id;
@@ -115,5 +143,6 @@ const posts_detail = asyncHandler(async (req, res, _) => {
 
 export default {
     posts,
+    posts_author,
     posts_detail,
 };

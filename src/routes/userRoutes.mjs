@@ -16,17 +16,17 @@ route.get(
 );
 
 route.post('/', UserController.POST.users_signup);
-route.post('/authors', UserController.POST.users_authors_signup);
 route.post('/tokens', UserController.POST.users_login);
+route.post('/authors', UserController.POST.users_authors_signup);
 route.post('/authors/tokens', UserController.POST.users_authors_login);
 
 route.put(
-    '/',
+    '/:userId',
     validObjectId('userId'),
     verifyToken,
     UserController.PUT.users_update
 );
-route.put('/posts', verifyToken, UserController.PUT.users_bookmark);
+route.put('/:userId/posts', verifyToken, UserController.PUT.users_bookmark);
 
 route.delete(
     '/',

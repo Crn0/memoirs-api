@@ -1,11 +1,14 @@
 import asyncHandler from 'express-async-handler';
+import Post from '../../../models/postSchema.mjs';
 import Comment from '../../../models/commentSchema.mjs';
 import APIError from '../../../helpers/errors/apiError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 
 const comments_delete = [
     asyncHandler(async (req, res, next) => {
-        const { postId, commentId } = req.params;
+        const { commentId } = req.params;
+        const { user } = req;
+        const post = await Post.findOne({author: user._id});
         const comment = await Comment.findOne({
             $and: { _id: commentId, isDeleted: false },
         });
@@ -18,9 +21,8 @@ const comments_delete = [
                 httpStatusCode.NOT_FOUND
             );
         };
-        if (comment.postId !== postId) {
-            console.log(comment.postId === postId)
-            console.log(comment.postId !== postId)
+        if (post?.author.toString() !== user._id || post === null) {
+         
             return next();
         }
 
@@ -38,7 +40,7 @@ const comments_delete = [
         const findComment = await Comment.findOne({
             $and: { _id: commentId, author: userId, isDeleted: false },
         });
-    
+        
         if (findComment === null) {
             throw new APIError(
                 'comment does not exist',

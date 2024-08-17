@@ -190,7 +190,7 @@ const users_authors_signup =  [
     asyncHandler(async (req, res, _) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;
-
+        console.log(req.body)
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
                 const { type, msg: message, path: field } = err;

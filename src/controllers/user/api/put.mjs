@@ -8,6 +8,7 @@ import FormError from '../../../helpers/errors/formError.mjs';
 import { isNotEmpty } from '../../../helpers/validators/validators.mjs';
 import APIError from '../../../helpers/errors/apiError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
+import generateAndSendToken from '../../../helpers/security/generateAndSendToken.mjs';
 
 const users_update = [
     body(formConstants.FIRST_NAME)
@@ -34,10 +35,24 @@ const users_update = [
             return Promise.resolve();
         })
         .escape(),
+        body(formConstants.EMAIL)
+        .trim()
+        .isEmail()
+        .withMessage('The email is not a valid email address')
+        .custom(async (value, { req }) => {
+            const user = await User.findOne({ email: value }).exec();
+
+            if (!user) return Promise.resolve();
+            if (req.user.email !== value && user.email === value)
+                return Promise.reject('email already in use');
+
+            return Promise.resolve();
+        })
+        .escape(),
     asyncHandler(async (req, res, _) => {
         const { firstName, lastName, username } = req.body;
+        const { userId } = req.params;
         const errors = validationResult(req);
-        const userId = req.user._id;
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -57,11 +72,9 @@ const users_update = [
             userId,
             { username, firstName, lastName },
             { new: true }
-        );
+        ).lean();
 
-        res.status(httpStatusCode.OK).json({
-            user,
-        });
+        generateAndSendToken(res, user);
     }),
 ];
 
@@ -79,9 +92,10 @@ const users_bookmark = [
         .escape(),
 
     asyncHandler(async (req, res, _) => {
+        const { userId } = req.params;
         const { postId } = req.body;
         const errors = validationResult(req);
-        const userId = req.user._id;
+
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {

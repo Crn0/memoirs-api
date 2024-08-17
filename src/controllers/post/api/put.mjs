@@ -80,7 +80,7 @@ const posts_update = [
         const { postId } = req.params;
         const errors = validationResult(req);
         const { title, body, status, tags, image_url, image_id } = req.body;
-
+        
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
                 const { type, msg: message, path: field } = err;
@@ -130,10 +130,10 @@ const posts_status = [
     body(formName.STATUS)
     .trim()
     .custom((val) => {
-        if (val === 'true') return false;
-        if (val === 'false') return false;
+        if (val === 'true') return true;
+        if (val === 'false') return true;
 
-        return true;
+        return false;
     })
     .withMessage('status must be a boolean')
     .escape(),
@@ -141,6 +141,7 @@ const posts_status = [
         const { postId } = req.params;
         const { status } = req.body;
         const errors = validationResult(req);
+        console.log(req.body)
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -159,12 +160,10 @@ const posts_status = [
             );
         }
 
-
         const post = await Post.findByIdAndUpdate(postId, {
             isPrivate: (() => {
-                if (status === 'true') return true;
-
-                return false;
+                if (status === 'true') return false;
+                if (status === 'false') return true;
             })()
         }, {
             new: true,

@@ -66,13 +66,11 @@ const posts_update = [
     body(formName.TITLE)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('Title must not be empty')
-        .escape(),
+        .withMessage('Title must not be empty'),
     body(formName.BODY)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('Post body must not be empty')
-        .escape(),
+        .withMessage('Post body must not be empty'),
     body(formName.STATUS).trim().escape(),
     body(`${formName.TAGS}.*`).trim(),
     asyncHandler(async (req, res, _) => {

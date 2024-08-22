@@ -47,8 +47,7 @@ const posts_new = [
     body(formConstants.TITLE)
         .trim()
         .custom(isNotEmpty)
-        .withMessage('Title must not be empty')
-        .escape(),
+        .withMessage('Title must not be empty'),
     body(formConstants.BODY)
         .trim()
         .custom(isNotEmpty)

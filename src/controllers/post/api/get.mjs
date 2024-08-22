@@ -113,7 +113,7 @@ const posts_detail = asyncHandler(async (req, res, _) => {
         },
     })
         .populate('author', 'firstName lastName username')
-        .populate('tags', { sort: { name: 1 } });
+        .populate('tags', '_id name', null, { sort: { name: 1 } });
     const comments = await Comment.find({
         $and: { post: postId, isReply: false },
     })

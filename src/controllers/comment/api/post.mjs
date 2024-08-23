@@ -16,9 +16,18 @@ const comments_new = [
     asyncHandler(async (req, res, _) => {
         const { user } = req;
         const { postId } = req.params;
-        const errors = validationResult(req);
-
         const { body } = req.body;
+        const errors = validationResult(req);
+        const post = await Post.findById(postId);
+
+        if (post.author.toString() !== user._id && post.isPrivate) {
+            throw new APIError(
+                'post does not exist',
+                'NOT FOUND',
+                'RESOURCE ERROR',
+                httpStatusCode.NOT_FOUND
+            );
+        }
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -59,8 +68,17 @@ const comments_reply = [
         const { user } = req;
         const { postId, commentId } = req.params;
         const errors = validationResult(req);
-
-        let { body, isReply } = req.body;
+        const { body } = req.body;
+        const post = await Post.findById(postId);
+        
+        if (post.author.toString() !== user._id && post.isPrivate) {
+            throw new APIError(
+                'post does not exist',
+                'NOT FOUND',
+                'RESOURCE ERROR',
+                httpStatusCode.NOT_FOUND
+            );
+        }
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -79,15 +97,12 @@ const comments_reply = [
             );
         }
 
-        if (isReply !== true) {
-            isReply = true;
-        }
-
+      
         const commentReply = await Comment.create({
-            isReply,
             body,
             author: user._id,
             post: postId,
+            isReply: true,
         });
 
         const comment = await Comment.findOneAndUpdate(

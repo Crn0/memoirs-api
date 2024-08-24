@@ -52,6 +52,12 @@ const comments_new = [
             post: postId,
         });
 
+        post.comments.push(comment);
+
+        await post.save();
+
+        await Comment.populate(comment, { path: 'author'});
+
         res.status(201).json({ comment });
     }),
 ];
@@ -97,7 +103,6 @@ const comments_reply = [
             );
         }
 
-      
         const commentReply = await Comment.create({
             body,
             author: user._id,
@@ -120,7 +125,12 @@ const comments_reply = [
             );
         }
 
-        res.status(201).json({ comment, repLen: comment.replies.length });
+        post.comments.push(commentReply);
+
+        await post.save();
+        await Comment.populate(commentReply, { path: 'author', select: 'firstName lastName username'})
+
+        res.status(201).json({ comment: commentReply });
     }),
 ];
 

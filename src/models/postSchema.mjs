@@ -13,6 +13,7 @@ const postSchema = new Schema(
         },
         title: { type: String, required: true },
         body: { type: String, required: true },
+        comments: [{ type: Types.ObjectId, ref: 'Comment'}],
         isPrivate: {
             type: Boolean,
             required: true,

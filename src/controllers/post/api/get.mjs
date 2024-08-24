@@ -88,9 +88,16 @@ const posts_detail = asyncHandler(async (req, res, _) => {
     if (req.user?.membership === 'Admin') {
         const post = await Post.findById(postId)
             .populate('author', 'firstName lastName username')
-            .populate('tags', '_id name', null, { sort: { name: 1 } });
-
-        const comments = await Comment.find({ post: postId }).populate('author', 'firstName lastName username').sort({ created_at: 1 });
+            .populate('tags', '_id name', null, { sort: { name: 1 } })
+            .populate('comments')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'firstName lastName username'
+                }
+            });
+        
         
         if (post === null) {
             throw new APIError(
@@ -101,8 +108,8 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             );
         }
 
-        res.status(httpStatusCode.OK).json({ post, comments });
-
+        res.status(httpStatusCode.OK).json({ post });
+        
         return;
     }
 
@@ -113,19 +120,17 @@ const posts_detail = asyncHandler(async (req, res, _) => {
         },
     })
         .populate('author', 'firstName lastName username')
-        .populate('tags', '_id name', null, { sort: { name: 1 } });
-    const comments = await Comment.find({
-        $and: { post: postId, isReply: false },
-    })
-        .populate('author', 'firstName lastName username')
-        .populate('replies')
+        .populate('tags', '_id name', null, { sort: { name: 1 } })
+        .populate('comments')
         .populate({
-            path: 'replies',
-            populate: { path: 'author', select: ['firstName', 'lastName'] },
-        })
-        .sort({ 'likes.count': 1 })
-        .exec();
+            path: 'comments',
+            populate: {
+                path: 'author',
+                select: 'firstName lastName username'
+            }
+        });
 
+        
     if (post === null) {
         throw new APIError(
             'post does not exist',
@@ -137,7 +142,6 @@ const posts_detail = asyncHandler(async (req, res, _) => {
 
     res.status(httpStatusCode.OK).json({
         post,
-        comments,
     });
 });
 

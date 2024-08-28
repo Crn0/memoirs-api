@@ -72,7 +72,7 @@ const posts_author = asyncHandler(async (req, res, _) => {
         })
         .sort({ [sortKey]: sortOrder });
 
-    const total = await Post.countDocuments().exec();
+    const total = await Post.find({author: req?.user._id}).exec();
 
     res.status(httpStatusCode.OK).json({
         posts,

@@ -10,6 +10,7 @@ import {
 import FormError from '../../../helpers/errors/formError.mjs';
 import httpStatusCode from '../../../constants/httpStatusCode.mjs';
 import Cloudinary from '../../../helpers/media/cloudinary.mjs';
+import APIError from '../../../helpers/errors/apiError.mjs';
 
 /**
     TODO:
@@ -32,37 +33,6 @@ const posts_update = [
 
         next();
     },
-    body('image_url')
-        .trim()
-        .custom(isNotEmpty)
-        .withMessage('Post image url must not be empty')
-        .custom((val) => {
-            const url = new URL(val);
-
-            if (url.hostname !== 'res.cloudinary.com') return false;
-
-            return true;
-        })
-        .withMessage('Invalid image url')
-        .unescape(),
-    body('image_id')
-        .trim()
-        .custom(isNotEmpty)
-        .withMessage('Post image id must not be empty')
-        .escape(),
-    body(formName.COVER)
-        .trim()
-        .custom(validFileType)
-        .withMessage(
-            'The file extension is not supported. Please upload a file with one of the following extensions: .jpg, .jpeg, .png, .webp'
-        )
-        .custom((_, { req }) => {
-            if (req.file?.size > 5242880) return false;
-
-            return true;
-        })
-        .withMessage('File size exceeds the maximum limit')
-        .escape(),
     body(formName.TITLE)
         .trim()
         .custom(isNotEmpty)
@@ -77,7 +47,7 @@ const posts_update = [
         const { user } = req;
         const { postId } = req.params;
         const errors = validationResult(req);
-        const { title, body, status, tags, image_url, image_id } = req.body;
+        const { title, body, status, tags } = req.body;
         
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -96,29 +66,64 @@ const posts_update = [
             );
         }
 
-        const tagList = await Tag.find({ name: tags });
+        const oldPost = await Post.findById(postId);
+        
+        if (oldPost === null) {
+            throw new APIError(
+                'post does not exist',
+                'NOT FOUND',
+                'RESOURCE ERROR',
+                httpStatusCode.NOT_FOUND
+            );
+        }
+
+        let tagList = await Tag.find({ name: tags });
+        const tagsName = new Set(tagList.map((tag) => tag.name))
+        const tagsToInsert = tags.reduce((prev, name) => {
+            if (!tagsName.has(name)) {
+                if(Array.isArray(prev)) {
+                    return [...prev, { name }]
+                } else {
+                    if (name.trim() !== "") return [{ name }];
+
+                    return null
+                }
+            }
+        }, {});
+
+        if (tagsToInsert?.length) {
+            const createTags = await Tag.insertMany(tagsToInsert);
+
+            tagList = [...tagList, ...createTags];
+        }
+
         const postUpdate = Post({
             title,
             body,
             status,
-            tagList,
+            tags: tagList,
             _id: postId,
             author: user._id,
         });
 
+        if (oldPost.cover.cloudinary_id) {
+            await Cloudinary.destroy(oldPost.cover.cloudinary_id)
+        }
+
         if (req.file) {
-            const image = await Cloudinary.update(req.file.path, image_id);
+            const image = await Cloudinary.upload(req.file.path, req.user.username, postId);
 
             postUpdate.cover.url = image.url;
             postUpdate.cover.cloudinary_id = image.public_id;
-        } else {
-            postUpdate.cover.url = image_url;
-            postUpdate.cover.cloudinary_id = image_id;
-        }
+        } 
 
         const post = await Post.findByIdAndUpdate(postId, postUpdate, {
             new: true,
-        });
+        }).populate('author', 'firstName lastName username');
+
+        if (post.tags.length) {
+            await post.populate('tags', 'name');
+        }
 
         res.status(httpStatusCode.OK).json({ post });
     }),

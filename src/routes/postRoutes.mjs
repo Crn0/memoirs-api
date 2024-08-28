@@ -59,34 +59,34 @@ route.post(
 );
 // PUT
 // update a blog post
-// route.put(
-//     '/:postId',
-//     [validObjectId('postId'), verifyToken, isAdminOrAuthor, isTheAuthorOfPost],
-//     (req, res, next) => {
-//         upload.single(formConstants.COVER)(req, res, (err) => {
-//             if (err instanceof multer.MulterError) {
-//                 next(
-//                     new FormError(err.message, {
-//                         type: 'field',
-//                         field: err.field,
-//                         message: err.code,
-//                     })
-//                 );
-//             } else if (err) {
-//                 next(
-//                     new FormError(err.message, {
-//                         type: 'field',
-//                         field: err.field,
-//                         message: err.code,
-//                     })
-//                 );
-//             }
+route.put(
+    '/:postId',
+    [validObjectId('postId'), verifyToken, isAdminOrAuthor, isTheAuthorOfPost],
+    (req, res, next) => {
+        upload.single(formConstants.COVER)(req, res, (err) => {
+            if (err instanceof multer.MulterError) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            } else if (err) {
+                next(
+                    new FormError(err.message, {
+                        type: 'field',
+                        field: err.field,
+                        message: err.code,
+                    })
+                );
+            }
 
-//             next();
-//         });
-//     },
-//     PostController.PUT.posts_update
-// );
+            next();
+        });
+    },
+    PostController.PUT.posts_update
+);
 
 route.put(
     '/:postId/status',

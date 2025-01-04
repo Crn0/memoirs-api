@@ -72,7 +72,7 @@ const posts_author = asyncHandler(async (req, res, _) => {
         })
         .sort({ [sortKey]: sortOrder });
 
-    const total = await Post.find({author: req?.user._id}).exec();
+    const total = await Post.find({ author: req?.user._id }).exec();
 
     res.status(httpStatusCode.OK).json({
         posts,
@@ -94,11 +94,10 @@ const posts_detail = asyncHandler(async (req, res, _) => {
                 path: 'comments',
                 populate: {
                     path: 'author',
-                    select: 'firstName lastName username'
-                }
+                    select: 'firstName lastName username',
+                },
             });
-        
-        
+
         if (post === null) {
             throw new APIError(
                 'post does not exist',
@@ -109,15 +108,13 @@ const posts_detail = asyncHandler(async (req, res, _) => {
         }
 
         res.status(httpStatusCode.OK).json({ post });
-        
+
         return;
     }
 
     const post = await Post.findOne({
-        $and: {
-            _id: postId,
-            $or: [{ author: id }, { isPrivate: false }],
-        },
+        _id: postId,
+        $or: [{ author: id }, { isPrivate: false }],
     })
         .populate('author', 'firstName lastName username')
         .populate('tags', '_id name', null, { sort: { name: 1 } })
@@ -126,11 +123,10 @@ const posts_detail = asyncHandler(async (req, res, _) => {
             path: 'comments',
             populate: {
                 path: 'author',
-                select: 'firstName lastName username'
-            }
+                select: 'firstName lastName username',
+            },
         });
 
-        
     if (post === null) {
         throw new APIError(
             'post does not exist',

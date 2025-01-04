@@ -23,11 +23,9 @@ const mongoDb = DB_URI;
 // Wait for database to connect, logging an error if there is a problem
 const main = async () => await mongoose.connect(mongoDb);
 
-main().catch(console.error);
+process.env.NODE_ENV !== 'test' && main().catch(console.error);
 
 passportStrategies;
-
-
 
 app.use(cors(corsOptions));
 

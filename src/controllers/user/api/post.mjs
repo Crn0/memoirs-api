@@ -34,7 +34,7 @@ const users_signup = [
         .custom((val) => {
             const regex = /^[{a-zA-Z}]{1,}\d{0,}[{a-zA-Z}]{0,}$/g;
             // https://regexr.com/83re3
-            return regex.test(val)
+            return regex.test(val);
         })
         .withMessage('Username must not contain special characters.')
         .escape(),
@@ -82,9 +82,11 @@ const users_signup = [
             password: hashedPassword,
         });
 
-        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: JWT_EXP});
+        const token = jwt.sign(user.toJSON(), JWT_SECRET, {
+            expiresIn: JWT_EXP,
+        });
 
-        res.status(httpStatusCode.CREATED).json({user, token});
+        res.status(httpStatusCode.CREATED).json({ user, token });
     }),
 ];
 
@@ -111,10 +113,7 @@ const users_login = [
                     message,
                 };
             });
-            throw new FormError(
-                'Validation Failed',
-                errorFields
-            );
+            throw new FormError('Validation Failed', errorFields);
         }
 
         next();
@@ -129,10 +128,12 @@ const users_login = [
                 }
 
                 if (!user || info) {
-                    next(new AuthenticateError(
-                        'Authentication failed',
-                        info.message
-                    ));
+                    return next(
+                        new AuthenticateError(
+                            'Authentication failed',
+                            info.message
+                        )
+                    );
                 }
 
                 // remove the password in the user object;
@@ -145,7 +146,7 @@ const users_login = [
     },
 ];
 
-const users_authors_signup =  [
+const users_authors_signup = [
     body(formConstants.FIRST_NAME)
         .trim()
         .custom(isNotEmpty)
@@ -162,7 +163,7 @@ const users_authors_signup =  [
         .custom((val) => {
             const regex = /^[{a-zA-Z}]{1,}\d{0,}[{a-zA-Z}]{0,}$/g;
             // https://regexr.com/83re3
-            return regex.test(val)
+            return regex.test(val);
         })
         .withMessage('Username must not contain special characters')
         .escape(),
@@ -183,14 +184,13 @@ const users_authors_signup =  [
     body(formConstants.AUTH_PWD)
         .trim()
         .custom((val) => {
-
             return val === process.env.AUTH_PWD;
         })
         .withMessage('Access Denied: Not authorized.'),
     asyncHandler(async (req, res, _) => {
         const errors = validationResult(req);
         const { firstName, lastName, username, email, password } = req.body;
-        console.log(req.body)
+        console.log(req.body);
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
                 const { type, msg: message, path: field } = err;
@@ -215,18 +215,20 @@ const users_authors_signup =  [
             email,
             username,
             password: hashedPassword,
-            membership: "Author",
+            membership: 'Author',
         });
 
-        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: JWT_EXP});
+        const token = jwt.sign(user.toJSON(), JWT_SECRET, {
+            expiresIn: JWT_EXP,
+        });
 
-        res.status(httpStatusCode.CREATED).json({user, token});
+        res.status(httpStatusCode.CREATED).json({ user, token });
     }),
 ];
 
 const users_authors_login = [
     (req, res, next) => {
-        next()
+        next();
     },
     body(formConstants.EMAIL)
         .trim()
@@ -250,10 +252,7 @@ const users_authors_login = [
                     message,
                 };
             });
-            throw new FormError(
-                'Validation Failed',
-                errorFields
-            );
+            throw new FormError('Validation Failed', errorFields);
         }
 
         next();
@@ -268,10 +267,12 @@ const users_authors_login = [
                 }
 
                 if (!user || info) {
-                    next(new AuthenticateError(
-                        'Authentication failed',
-                        info.message
-                    ));
+                    next(
+                        new AuthenticateError(
+                            'Authentication failed',
+                            info.message
+                        )
+                    );
                 }
 
                 // remove the password in the user object;

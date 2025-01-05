@@ -11,9 +11,9 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { DB_URI } from './constants/env.mjs';
 import * as Routes from './routes/indexRoute.mjs';
-import passportStrategies from './configs/passport.mjs';
 import errorHandler from './helpers/errors/errorHandler.mjs';
 import corsOptions from './configs/cors.mjs';
+import './configs/passport.mjs';
 
 const app = express();
 const __dirname =
@@ -24,8 +24,6 @@ const mongoDb = DB_URI;
 const main = async () => await mongoose.connect(mongoDb);
 
 process.env.NODE_ENV !== 'test' && main().catch(console.error);
-
-passportStrategies;
 
 app.use(cors(corsOptions));
 

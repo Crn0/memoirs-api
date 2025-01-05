@@ -7,7 +7,7 @@ import validObjectId from '../middlewares/isObjectId.mjs';
 const route = Router();
 
 route.get('/', verifyToken, isAdmin, UserController.GET.users);
-route.get('/token/me', verifyToken, UserController.GET.users_token_me);
+route.get('/tokens/me', verifyToken, UserController.GET.users_token_me);
 route.get(
     '/:userId',
     verifyToken,
@@ -17,14 +17,16 @@ route.get(
 
 route.post('/', UserController.POST.users_signup);
 route.post('/tokens', UserController.POST.users_login);
+route.post('/authors', UserController.POST.users_authors_signup);
+route.post('/authors/tokens', UserController.POST.users_authors_login);
 
 route.put(
-    '/',
+    '/:userId',
     validObjectId('userId'),
     verifyToken,
     UserController.PUT.users_update
 );
-route.put('/posts', verifyToken, UserController.PUT.users_bookmark);
+route.put('/:userId/posts', verifyToken, UserController.PUT.users_bookmark);
 
 route.delete(
     '/',

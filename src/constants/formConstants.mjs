@@ -8,13 +8,14 @@ const CONFIRM_PWD = 'confirm_password';
 const COVER = 'cover';
 const TITLE = 'title';
 const BODY = 'body';
-const STATUS = 'private';
+const STATUS = 'status';
 const TAGS = 'tags';
 const IS_REPLY = 'isReply';
 const IS_DELETED = 'isDelete';
 const IS_AUTHOR = 'author';
 const MEMBERSHIP = 'membership';
 const POST_ID = 'postId';
+const AUTH_PWD = 'authorization_password'
 
 export default {
     NAME,
@@ -34,4 +35,5 @@ export default {
     IS_DELETED,
     IS_AUTHOR,
     POST_ID,
+    AUTH_PWD,
 };

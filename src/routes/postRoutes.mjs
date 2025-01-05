@@ -14,6 +14,11 @@ const route = Router();
 // GET
 // get all blog post
 route.get('/', attachUser, PostController.GET.posts);
+route.get(
+    '/author',
+    verifyToken,
+    PostController.GET.posts_author
+);
 // GET
 // get a single blog post
 route.get(
@@ -81,6 +86,13 @@ route.put(
         });
     },
     PostController.PUT.posts_update
+);
+
+route.put(
+    '/:postId/status',
+    [validObjectId('postId'), verifyToken, isAdminOrAuthor, isTheAuthorOfPost],
+    // upload.single(formConstants.COVER),
+    PostController.PUT.posts_status
 );
 // DELETE
 // delete a blog post

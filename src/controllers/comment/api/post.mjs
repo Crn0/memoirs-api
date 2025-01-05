@@ -16,9 +16,18 @@ const comments_new = [
     asyncHandler(async (req, res, _) => {
         const { user } = req;
         const { postId } = req.params;
-        const errors = validationResult(req);
-
         const { body } = req.body;
+        const errors = validationResult(req);
+        const post = await Post.findById(postId);
+
+        if (post.author.toString() !== user._id && post.isPrivate) {
+            throw new APIError(
+                'post does not exist',
+                'NOT FOUND',
+                'RESOURCE ERROR',
+                httpStatusCode.NOT_FOUND
+            );
+        }
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -43,6 +52,12 @@ const comments_new = [
             post: postId,
         });
 
+        post.comments.push(comment);
+
+        await post.save();
+
+        await Comment.populate(comment, { path: 'author'});
+
         res.status(201).json({ comment });
     }),
 ];
@@ -59,8 +74,17 @@ const comments_reply = [
         const { user } = req;
         const { postId, commentId } = req.params;
         const errors = validationResult(req);
-
-        let { body, isReply } = req.body;
+        const { body } = req.body;
+        const post = await Post.findById(postId);
+        
+        if (post.author.toString() !== user._id && post.isPrivate) {
+            throw new APIError(
+                'post does not exist',
+                'NOT FOUND',
+                'RESOURCE ERROR',
+                httpStatusCode.NOT_FOUND
+            );
+        }
 
         if (!errors.isEmpty()) {
             const errorFields = errors.array().map((err) => {
@@ -79,15 +103,11 @@ const comments_reply = [
             );
         }
 
-        if (isReply !== true) {
-            isReply = true;
-        }
-
         const commentReply = await Comment.create({
-            isReply,
             body,
             author: user._id,
             post: postId,
+            isReply: true,
         });
 
         const comment = await Comment.findOneAndUpdate(
@@ -105,7 +125,12 @@ const comments_reply = [
             );
         }
 
-        res.status(201).json({ comment, repLen: comment.replies.length });
+        post.comments.push(commentReply);
+
+        await post.save();
+        await Comment.populate(commentReply, { path: 'author', select: 'firstName lastName username'})
+
+        res.status(201).json({ comment: commentReply });
     }),
 ];
 
